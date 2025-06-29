@@ -29,7 +29,9 @@ app.post("/deepseek", async (req, res) => {
       }),
     });
 
+    // سجل الرد الكامل من DeepSeek لتسهيل التشخيص
     const data = await response.json();
+    console.log("رد DeepSeek:", JSON.stringify(data));
 
     if (
       data &&
@@ -39,6 +41,9 @@ app.post("/deepseek", async (req, res) => {
       data.choices[0].message.content
     ) {
       res.json({ reply: data.choices[0].message.content });
+    } else if (data && data.error) {
+      // إذا كان الرد يحتوي على خطأ واضح من DeepSeek يرجع رسالة الخطأ مباشرة
+      res.status(500).json({ reply: `خطأ من DeepSeek: ${data.error.message || JSON.stringify(data.error)}` });
     } else {
       res.status(500).json({ reply: "حدث خطأ في جلب رد الذكاء الاصطناعي." });
     }
