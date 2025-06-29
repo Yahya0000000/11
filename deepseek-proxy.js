@@ -6,12 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ضع مفتاح DeepSeek الخاص بك هنا (لا تضعه في js/chatbot.js)
 const DEEPSEEK_API_KEY = "sk-a2bc043165ce41f390a1e24a9c5d488f";
 
 app.post("/deepseek", async (req, res) => {
   try {
     const { message } = req.body;
-
     const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -21,7 +21,7 @@ app.post("/deepseek", async (req, res) => {
       body: JSON.stringify({
         model: "deepseek-chat",
         messages: [
-          { role: "system", content: "أنت مساعد ذكي وودود يتحدث العربية الفصحى ويوضح الذكاء الاصطناعي ببساطة." },
+          { role: "system", content: "أنت مساعد ذكي." },
           { role: "user", content: message }
         ],
         temperature: 0.7,
@@ -31,15 +31,23 @@ app.post("/deepseek", async (req, res) => {
 
     const data = await response.json();
 
-    if (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+    if (
+      data &&
+      data.choices &&
+      data.choices[0] &&
+      data.choices[0].message &&
+      data.choices[0].message.content
+    ) {
       res.json({ reply: data.choices[0].message.content });
     } else {
       res.status(500).json({ reply: "حدث خطأ في جلب رد الذكاء الاصطناعي." });
     }
   } catch (err) {
+    console.error("خطأ في /deepseek:", err);
     res.status(500).json({ reply: "حدث خطأ أثناء الاتصال بذكاء ديب سيك." });
   }
 });
 
-const PORT = process.env.PORT || 3000;
+// استخدم PORT من البيئة أو 10000 (مناسب لـ Render)
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log("DeepSeek Proxy Server running on port", PORT));
