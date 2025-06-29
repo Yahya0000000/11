@@ -1,7 +1,7 @@
 {
-  "name": "deepseek-proxy",
+  "name": "hf-proxy",
   "version": "1.0.0",
-  "main": "deepseek-proxy.js",
+  "main": "hf-proxy.js",
   "type": "commonjs",
   "dependencies": {
     "express": "^4.19.2",
